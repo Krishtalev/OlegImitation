@@ -1,0 +1,10 @@
+V:\OlegImitation\ImitationOleg\ImitationOleg\bin\Debug\ImitationOleg.exe.config
+V:\OlegImitation\ImitationOleg\ImitationOleg\bin\Debug\ImitationOleg.exe
+V:\OlegImitation\ImitationOleg\ImitationOleg\bin\Debug\ImitationOleg.pdb
+V:\OlegImitation\ImitationOleg\ImitationOleg\obj\Debug\ImitationOleg.csprojAssemblyReference.cache
+V:\OlegImitation\ImitationOleg\ImitationOleg\obj\Debug\ImitationOleg.Form1.resources
+V:\OlegImitation\ImitationOleg\ImitationOleg\obj\Debug\ImitationOleg.Properties.Resources.resources
+V:\OlegImitation\ImitationOleg\ImitationOleg\obj\Debug\ImitationOleg.csproj.GenerateResource.cache
+V:\OlegImitation\ImitationOleg\ImitationOleg\obj\Debug\ImitationOleg.csproj.CoreCompileInputs.cache
+V:\OlegImitation\ImitationOleg\ImitationOleg\obj\Debug\ImitationOleg.exe
+V:\OlegImitation\ImitationOleg\ImitationOleg\obj\Debug\ImitationOleg.pdb
