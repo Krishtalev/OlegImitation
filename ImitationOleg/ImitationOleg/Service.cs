@@ -42,9 +42,9 @@ namespace ImitationOleg
 
             this.isEmpty = true;
             this.isWorking = true;
-            serviceTime = float.MaxValue;
-            breakTime = breakFunction.generateValue(breakParam);
-            repairTime = float.MaxValue;
+            this.serviceTime = float.MaxValue;
+            this.breakTime = breakFunction.generateValue(breakParam);
+            this.repairTime = float.MaxValue;
         }
 
         public void serveRequest()

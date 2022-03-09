@@ -12,7 +12,7 @@ namespace ImitationOleg
         {
             Random rnd = new Random();
             float a = (float)rnd.NextDouble();
-            float value = -(float)Math.Log(a) / param;
+            float value = Math.Abs(-(float)Math.Log(a) / param);
             return value;
         }
     }

@@ -19,7 +19,7 @@ namespace ImitationOleg
 
         public int expMax = 50;
         public float step = 0.1F;
-
+        public float firstValue;
 
 
         private int orbitStatisticMaxValue;
@@ -37,7 +37,7 @@ namespace ImitationOleg
 
             time = 0;
             eventCounter = 0;
-            maxEvents = 1000000;
+            maxEvents = 8000000;
 
             orbitStatisticMaxValue = maxEvents;
             orbitStatistic = new float[orbitStatisticMaxValue];
@@ -52,15 +52,19 @@ namespace ImitationOleg
 
             int counter = 0;
             R0Statistic = new float[expMax];
+            firstValue = service.repairParam;
+            service.repairParam -= step;
 
             while (counter < expMax)
             {
                 time = 0;
                 R0 = 0;
-                eventCounter = 0;    
+                eventCounter = 0;
+
                 service.reset(service.serviceParam, service.breakParam, (float)(service.repairParam + step));
                 arrivalProcess.reset(arrivalProcess.arrivalParam);
                 orbit.reset(orbit.waitParam);
+
                 while (eventCounter < maxEvents)
                 {
                     float arrivalTime = arrivalProcess.getArrivalTime();
@@ -145,7 +149,7 @@ namespace ImitationOleg
 
             for (int j = 1; j <= R0Statistic.Length; j++)
             {
-                workSheet.Cells[j, 1] = 0 + j*step;
+                workSheet.Cells[j, 1] = firstValue + (j-1)*step;
                 workSheet.Cells[j, 2] = R0Statistic[j - 1];
 
             }
