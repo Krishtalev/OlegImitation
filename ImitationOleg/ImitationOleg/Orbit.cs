@@ -35,6 +35,7 @@ namespace ImitationOleg
             tryTimes.Add(tryTime);
         }
 
+
         public void removeLastFromOrbit(float minVal)
         {
             int index = tryTimes.IndexOf(minVal);
