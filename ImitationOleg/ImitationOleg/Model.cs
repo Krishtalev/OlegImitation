@@ -27,6 +27,8 @@ namespace ImitationOleg
 
         private float R0;
         private float[] R0Statistic;
+        private float R1;
+        private float[] R1Statistic;
         private float R2;
         private float[] R2Statistic;
 
@@ -38,13 +40,15 @@ namespace ImitationOleg
 
             time = 0;
             eventCounter = 0;
-            maxEvents = 2000000;
+            maxEvents = 1000000;
 
             orbitStatisticMaxValue = maxEvents;
             orbitStatistic = new float[orbitStatisticMaxValue];
             //Array.Clear(orbitStatistic, 0, orbitStatisticMaxValue);
 
             R0 = 0;
+            R1 = 0;
+            R2 = 0;
         }
         
 
@@ -53,6 +57,7 @@ namespace ImitationOleg
 
             int counter = 0;
             R0Statistic = new float[expMax];
+            R1Statistic = new float[expMax];
             R2Statistic = new float[expMax];
             firstValue = service.repairParam;
             service.repairParam -= step;
@@ -61,6 +66,7 @@ namespace ImitationOleg
             {
                 time = 0;
                 R0 = 0;
+                R1 = 0;
                 R2 = 0;
                 eventCounter = 0;
 
@@ -74,12 +80,13 @@ namespace ImitationOleg
                     float serviceTime = service.getServiceTime();
                     float breakTime = service.getBreakTime();
                     float repairTime = service.getRepairTime();
-                    float waitTime = float.MaxValue;//orbit.getWaitTime();
+                    float waitTime = orbit.getWaitTime();//float.MaxValue;//
 
                     float minTime = new float[] { arrivalTime, serviceTime, breakTime, repairTime, waitTime }.Min();
 
                     orbitStatistic[orbit.requestCounter] += minTime - time;
                     if (service.isEmpty && service.isWorking) R0 += minTime - time;
+                    if (!service.isEmpty && service.isWorking) R1 += minTime - time;
                     if (!service.isWorking) R2 += minTime - time;
 
                     time = minTime;
@@ -144,6 +151,7 @@ namespace ImitationOleg
                 //Console.WriteLine(time);
                 //Console.WriteLine(R0);
                 R0Statistic[counter] = R0 / time;
+                R1Statistic[counter] = R1 / time;
                 R2Statistic[counter] = R2 / time;
                 counter++;
                 
@@ -166,7 +174,8 @@ namespace ImitationOleg
             {
                 workSheet.Cells[j, 1] = firstValue + (j-1)*step;
                 workSheet.Cells[j, 2] = R0Statistic[j - 1];
-                workSheet.Cells[j, 3] = R2Statistic[j - 1];
+                workSheet.Cells[j, 3] = R1Statistic[j - 1];
+                workSheet.Cells[j, 4] = R2Statistic[j - 1];
 
             }
             excelApp.Visible = true;
