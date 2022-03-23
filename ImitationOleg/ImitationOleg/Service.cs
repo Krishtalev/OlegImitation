@@ -14,6 +14,7 @@ namespace ImitationOleg
         public float serviceTime;
         public float breakTime;
         public float repairTime;
+        public float previousTime;
         IDistribution serviceFunction, breakFunction, repairFunction;
 
         public Service(float serviceParam, IDistribution serviceFunction, float breakParam, IDistribution breakFunction, float repairParam, IDistribution repairFunction)
@@ -30,6 +31,7 @@ namespace ImitationOleg
             this.isEmpty = true;
             this.isWorking = true;
             serviceTime = float.MaxValue;
+            previousTime = 0;
             breakTime = breakFunction.generateValue(breakParam);
             repairTime = float.MaxValue;
         }
@@ -43,8 +45,16 @@ namespace ImitationOleg
             this.isEmpty = true;
             this.isWorking = true;
             this.serviceTime = float.MaxValue;
+            this.previousTime = 0;
             this.breakTime = breakFunction.generateValue(breakParam);
             this.repairTime = float.MaxValue;
+        }
+
+        public float getDelta()
+        {
+            float delta = serviceTime - previousTime;
+            previousTime = serviceTime;
+            return delta;
         }
 
         public void serveRequest()

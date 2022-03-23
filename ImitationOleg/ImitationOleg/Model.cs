@@ -31,6 +31,7 @@ namespace ImitationOleg
         private float[] R1Statistic;
         private float R2;
         private float[] R2Statistic;
+        private List<float> deltaList;
 
         public Model(ArrivalProcess arrivalProcess, Service service, Orbit orbit)
         {
@@ -50,9 +51,9 @@ namespace ImitationOleg
             R1 = 0;
             R2 = 0;
         }
-        
 
-        public float simulate()
+
+        public float[] simulate()
         {
 
             int counter = 0;
@@ -68,6 +69,7 @@ namespace ImitationOleg
                 R0 = 0;
                 R1 = 0;
                 R2 = 0;
+                deltaList = new List<float>();
                 eventCounter = 0;
 
                 service.reset(service.serviceParam, service.breakParam, (float)(service.repairParam + step));
@@ -108,6 +110,8 @@ namespace ImitationOleg
 
                     if (minTime == serviceTime)
                     {
+                        float delta = service.getDelta();
+                        deltaList.Add(delta);
                         service.serveRequest();
                     }
 
@@ -141,7 +145,7 @@ namespace ImitationOleg
                             orbit.removeLastFromOrbit(time);
                             orbit.addRequestToOrbit(time);
                         }
-                        
+
                     }
 
                     //Console.WriteLine(orbit.requestCounter);
@@ -154,12 +158,17 @@ namespace ImitationOleg
                 R1Statistic[counter] = R1 / time;
                 R2Statistic[counter] = R2 / time;
                 counter++;
-                
             }
-            exportStatistic();
-            int index = Array.FindLastIndex(orbitStatistic, item => item > 0);
+            //exportStatistic();
+            //int index = Array.FindLastIndex(orbitStatistic, item => item > 0);
             //exportStatisticKappa();
-            return R0 / time;
+            //exportStatisticDelta();
+            float orbitExp = orbitExpectation();
+            float deltaCov = deltaCovariance();
+            float deltaVar = deltaVariance();
+
+            float[] ans = new float[] { orbitExp, deltaVar, deltaCov };
+            return ans;
         }
 
         private void exportStatistic()
@@ -172,11 +181,28 @@ namespace ImitationOleg
 
             for (int j = 1; j <= R0Statistic.Length; j++)
             {
-                workSheet.Cells[j, 1] = firstValue + (j-1)*step;
+                workSheet.Cells[j, 1] = firstValue + (j - 1) * step;
                 workSheet.Cells[j, 2] = R0Statistic[j - 1];
                 workSheet.Cells[j, 3] = R1Statistic[j - 1];
                 workSheet.Cells[j, 4] = R2Statistic[j - 1];
 
+            }
+            excelApp.Visible = true;
+            excelApp.UserControl = true;
+        }
+
+        private void exportStatisticDelta()
+        {
+            Excel.Application excelApp = new Excel.Application();
+            Excel.Workbook workBook;
+            Excel.Worksheet workSheet;
+            workBook = excelApp.Workbooks.Add();
+            workSheet = (Excel.Worksheet)workBook.Worksheets.get_Item(1);
+
+            for (int j = 1; j <= 1000; j++)
+            {
+                workSheet.Cells[j, 1] = j - 1;
+                workSheet.Cells[j, 2] = deltaList[j - 1];
             }
             excelApp.Visible = true;
             excelApp.UserControl = true;
@@ -200,6 +226,55 @@ namespace ImitationOleg
             excelApp.UserControl = true;
         }
 
+        public float orbitExpectation()
+        {
+            float kappa = 0;
+            for (int i = 0; i < orbitStatistic.Length; i++)
+            {
+                kappa += orbitStatistic[i] / time * i;
+            }
+            return kappa;
+        }
 
+        public float deltaExpectation()
+        {
+            //int size = 100;
+            //float width = (deltaList.Max() - deltaList.Max()) / size;
+            float deltaExp = 0;
+            for (int i = 0; i < deltaList.Count(); i++)
+            {
+                deltaExp += deltaList[i];
+            }
+            deltaExp /= deltaList.Count();
+            return deltaExp;
+        }
+
+        public float deltaVariance()
+        {
+            float deltaExp2 = 0;
+            for (int i = 0; i < deltaList.Count(); i++)
+            {
+                deltaExp2 += deltaList[i] * deltaList[i];
+
+            }
+            float deltaExp = deltaExpectation();
+            float deltaVar = deltaExp2 / deltaList.Count() - deltaExp * deltaExp;
+
+            return deltaVar;
+        }
+
+        public float deltaCovariance()
+        {
+            float deltaCov = 0;
+            float deltaExp = deltaExpectation();
+            for (int i = 0; i < deltaList.Count(); i++)
+            {
+                deltaCov += (deltaList[i] - deltaExp) * orbit.waitParam;               
+            }
+            
+            deltaCov = deltaCov / (deltaList.Count() - 1);
+
+            return deltaCov;
+        }
     }
 }

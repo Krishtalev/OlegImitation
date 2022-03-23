@@ -36,7 +36,10 @@ namespace ImitationOleg
             Orbit orbit = new Orbit(waitParam, waitFunction);
 
             Model RQModel = new Model(arrivalProcess, service, orbit);
-            label6.Text = RQModel.simulate().ToString();
+            float[] ans = RQModel.simulate();
+            label6.Text = ans[0].ToString();
+            label7.Text = ans[1].ToString();
+            label8.Text = ans[2].ToString();
             Console.WriteLine("end");
         }
     }
