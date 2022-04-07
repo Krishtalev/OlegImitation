@@ -20,23 +20,23 @@ namespace ImitationOleg
         private void SimulateButton_Click(object sender, EventArgs e)
         {
             IDistribution arrivalFunction = new PoissonDistribution();
-            float arrivalParam = (float)arrivalParamInput.Value;
+            double arrivalParam = (double)arrivalParamInput.Value;
             ArrivalProcess arrivalProcess = new ArrivalProcess(arrivalParam, arrivalFunction);
 
             IDistribution serviceFunction = new ExponentialDistribution();
-            float serviceParam = (float)serviceParamInput.Value;
+            double serviceParam = (double)serviceParamInput.Value;
             IDistribution breakFunction = new ExponentialDistribution();
-            float breakParam = (float)breakParamInput.Value;
+            double breakParam = (double)breakParamInput.Value;
             IDistribution repairFunction = new ExponentialDistribution();
-            float repairParam = (float)repairParamInput.Value;
+            double repairParam = (double)repairParamInput.Value;
             Service service = new Service(serviceParam, serviceFunction, breakParam, breakFunction, repairParam, repairFunction);
 
             IDistribution waitFunction = new ExponentialDistribution();
-            float waitParam = (float)waitParamInput.Value;
+            double waitParam = (double)waitParamInput.Value;
             Orbit orbit = new Orbit(waitParam, waitFunction);
 
             Model RQModel = new Model(arrivalProcess, service, orbit);
-            float[] ans = RQModel.simulate();
+            double[] ans = RQModel.simulate();
             label6.Text = ans[0].ToString();
             label7.Text = ans[1].ToString();
             label8.Text = ans[2].ToString();

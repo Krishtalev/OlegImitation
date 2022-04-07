@@ -8,16 +8,16 @@ namespace ImitationOleg
 {
     class Service
     {
-        public float serviceParam, breakParam, repairParam;
+        public double serviceParam, breakParam, repairParam;
         public bool isEmpty;
         public bool isWorking;
-        public float serviceTime;
-        public float breakTime;
-        public float repairTime;
-        public float previousTime;
+        public double serviceTime;
+        public double breakTime;
+        public double repairTime;
+        public double previousTime;
         IDistribution serviceFunction, breakFunction, repairFunction;
 
-        public Service(float serviceParam, IDistribution serviceFunction, float breakParam, IDistribution breakFunction, float repairParam, IDistribution repairFunction)
+        public Service(double serviceParam, IDistribution serviceFunction, double breakParam, IDistribution breakFunction, double repairParam, IDistribution repairFunction)
         {
             this.serviceParam = serviceParam;
             this.serviceFunction = serviceFunction;
@@ -30,13 +30,13 @@ namespace ImitationOleg
 
             this.isEmpty = true;
             this.isWorking = true;
-            serviceTime = float.MaxValue;
+            serviceTime = double.MaxValue;
             previousTime = 0;
             breakTime = breakFunction.generateValue(breakParam);
-            repairTime = float.MaxValue;
+            repairTime = double.MaxValue;
         }
 
-        public void reset(float serviceParam, float breakParam, float repairParam)
+        public void reset(double serviceParam, double breakParam, double repairParam)
         {
             this.serviceParam = serviceParam;
             this.breakParam = breakParam;
@@ -44,15 +44,15 @@ namespace ImitationOleg
 
             this.isEmpty = true;
             this.isWorking = true;
-            this.serviceTime = float.MaxValue;
+            this.serviceTime = double.MaxValue;
             this.previousTime = 0;
             this.breakTime = breakFunction.generateValue(breakParam);
-            this.repairTime = float.MaxValue;
+            this.repairTime = double.MaxValue;
         }
 
-        public float getDelta()
+        public double getDelta()
         {
-            float delta = serviceTime - previousTime;
+            double delta = serviceTime - previousTime;
             previousTime = serviceTime;
             return delta;
         }
@@ -60,46 +60,46 @@ namespace ImitationOleg
         public void serveRequest()
         {
             isEmpty = true;
-            serviceTime = float.MaxValue;
+            serviceTime = double.MaxValue;
         }
 
-        public void addRequest(float time)
+        public void addRequest(double time)
         {
             isEmpty = false;
             serviceTime = time + serviceFunction.generateValue(serviceParam);
         }
 
-        public void breakService(float time)
+        public void breakService(double time)
         {
             isWorking = false;
             isEmpty = true;
-            breakTime = float.MaxValue;
+            breakTime = double.MaxValue;
             repairTime = time + repairFunction.generateValue(repairParam);
         }
 
-        public void repairService(float time)
+        public void repairService(double time)
         {
             isWorking = true;
             isEmpty = true;
-            repairTime = float.MaxValue;
+            repairTime = double.MaxValue;
             breakTime = time + breakFunction.generateValue(breakParam);
         }
 
-        public float getServiceTime()
+        public double getServiceTime()
         {
             if (!isEmpty && isWorking)
             {
                 return serviceTime;
             }
-            return float.MaxValue;
+            return double.MaxValue;
         }
 
-        public float getBreakTime()
+        public double getBreakTime()
         {
             return breakTime;
         }
 
-        public float getRepairTime()
+        public double getRepairTime()
         {
             return repairTime;
         }

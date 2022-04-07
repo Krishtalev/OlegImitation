@@ -8,11 +8,11 @@ namespace ImitationOleg
 {
     class ExponentialDistribution : IDistribution
     {
-        public float generateValue(float param)
+        public double generateValue(double param)
         {
             Random rnd = new Random();
-            float a = (float)rnd.NextDouble();
-            float value = Math.Abs(-(float)Math.Log(a) / param);
+            double a = (double)rnd.NextDouble();
+            double value = Math.Abs(-(double)Math.Log(a) / param);
             return value;
         }
     }

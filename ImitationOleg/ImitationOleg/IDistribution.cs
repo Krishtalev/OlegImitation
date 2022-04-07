@@ -8,6 +8,6 @@ namespace ImitationOleg
 {
     interface IDistribution
     {
-        float generateValue(float param);
+        double generateValue(double param);
     }
 }

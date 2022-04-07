@@ -8,49 +8,49 @@ namespace ImitationOleg
 {
     class Orbit
     {
-        public float waitParam;
+        public double waitParam;
         IDistribution waitFunction;
-        private List<float> tryTimes;
+        private List<double> tryTimes;
         public int requestCounter;
 
-        public Orbit(float waitParam, IDistribution waitFunction)
+        public Orbit(double waitParam, IDistribution waitFunction)
         {
             this.waitParam = waitParam;
             this.waitFunction = waitFunction;
-            tryTimes = new List<float>();
+            tryTimes = new List<double>();
             requestCounter = 0;
         }
 
-        public void reset(float waitParam)
+        public void reset(double waitParam)
         {
             this.waitParam = waitParam;
             tryTimes.Clear();
             requestCounter = 0;
         }
 
-        public void addRequestToOrbit(float time)
+        public void addRequestToOrbit(double time)
         {
             requestCounter += 1;
-            float tryTime = time + waitFunction.generateValue(waitParam);
+            double tryTime = time + waitFunction.generateValue(waitParam);
             tryTimes.Add(tryTime);
         }
 
 
-        public void removeLastFromOrbit(float minVal)
+        public void removeLastFromOrbit(double minVal)
         {
             int index = tryTimes.IndexOf(minVal);
             tryTimes.RemoveAt(index);
             requestCounter -= 1;
         }
 
-        public float getWaitTime()
+        public double getWaitTime()
         {
             if (requestCounter > 0)
             {
-                float minVal = tryTimes.Min();
+                double minVal = tryTimes.Min();
                 return minVal;
             }
-            return float.MaxValue;
+            return double.MaxValue;
         }
     }
 }

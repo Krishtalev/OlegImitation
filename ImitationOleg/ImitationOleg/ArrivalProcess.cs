@@ -8,11 +8,11 @@ namespace ImitationOleg
 {
     class ArrivalProcess
     {
-        public float arrivalParam;
+        public double arrivalParam;
         IDistribution arrivalFunction;
-        private float arrivalTime;
+        private double arrivalTime;
 
-        public ArrivalProcess(float arrivalParam, IDistribution arrivalFunction)
+        public ArrivalProcess(double arrivalParam, IDistribution arrivalFunction)
         {
             this.arrivalParam = arrivalParam;
             this.arrivalFunction = arrivalFunction;
@@ -20,18 +20,18 @@ namespace ImitationOleg
             calculateArrivalTime(0);
         }
 
-        public void reset(float arrivalParam)
+        public void reset(double arrivalParam)
         {
             this.arrivalParam = arrivalParam;
             calculateArrivalTime(0);
         }
 
-        public void calculateArrivalTime(float time)
+        public void calculateArrivalTime(double time)
         {
             arrivalTime = time + arrivalFunction.generateValue(arrivalParam);
         }
 
-        public float getArrivalTime()
+        public double getArrivalTime()
         {
             return arrivalTime;
         }
