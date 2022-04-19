@@ -159,7 +159,7 @@ namespace ImitationOleg
                 R2Statistic[counter] = R2 / time;
                 counter++;
             }
-            //exportStatistic();
+            exportStatistic();
             //int index = Array.FindLastIndex(orbitStatistic, item => item > 0);
             //exportStatisticKappa();
             //exportStatisticDelta();
@@ -229,11 +229,18 @@ namespace ImitationOleg
         public double orbitExpectation()
         {
             double kappa = 0;
+            double fullTime = 0;
             for (int i = 0; i < orbitStatistic.Length; i++)
             {
+                fullTime += orbitStatistic[i];
                 kappa += orbitStatistic[i] / time * i;
             }
-            return kappa;
+            if (fullTime == time)
+            {
+                Console.WriteLine("Okay");
+                return kappa;
+            }
+            return 0;
         }
 
         public double deltaExpectation()
