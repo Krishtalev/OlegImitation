@@ -112,6 +112,7 @@ namespace ImitationOleg
                     {
                         double delta = service.getDelta();
                         deltaList.Add(delta);
+                        eventCounter++;
                         service.serveRequest();
                     }
 
@@ -149,7 +150,6 @@ namespace ImitationOleg
                     }
 
                     //Console.WriteLine(orbit.requestCounter);
-                    eventCounter++;
                 }
 
                 //Console.WriteLine(time);
@@ -163,11 +163,13 @@ namespace ImitationOleg
             //int index = Array.FindLastIndex(orbitStatistic, item => item > 0);
             //exportStatisticKappa();
             //exportStatisticDelta();
-            double orbitExp = orbitExpectation();
+            double[] orbitTemp = orbitExpectation();
+            double orbitExp = orbitTemp[0];
+            double kappaTimeDif = orbitTemp[1];
             double deltaCov = deltaCovariance();
             double deltaVar = deltaVariance();
 
-            double[] ans = new double[] { orbitExp, deltaVar, deltaCov };
+            double[] ans = new double[] { orbitExp, deltaVar, deltaCov, kappaTimeDif };
             return ans;
         }
 
@@ -226,7 +228,7 @@ namespace ImitationOleg
             excelApp.UserControl = true;
         }
 
-        public double orbitExpectation()
+        public double[] orbitExpectation()
         {
             double kappa = 0;
             double fullTime = 0;
@@ -235,12 +237,7 @@ namespace ImitationOleg
                 fullTime += orbitStatistic[i];
                 kappa += orbitStatistic[i] / time * i;
             }
-            if (fullTime == time)
-            {
-                Console.WriteLine("Okay");
-                return kappa;
-            }
-            return 0;
+            return new double[] { kappa, fullTime - time };
         }
 
         public double deltaExpectation()
