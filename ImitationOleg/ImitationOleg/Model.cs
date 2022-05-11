@@ -32,6 +32,8 @@ namespace ImitationOleg
         private double R2;
         private double[] R2Statistic;
         private List<double> deltaList;
+        private double[] deltaProbs;
+        double probStep = 0.25;
 
         public Model(ArrivalProcess arrivalProcess, Service service, Orbit orbit)
         {
@@ -41,7 +43,7 @@ namespace ImitationOleg
 
             time = 0;
             eventCounter = 0;
-            maxEvents = 1000000;
+            maxEvents = 50000;
 
             orbitStatisticMaxValue = maxEvents;
             orbitStatistic = new double[orbitStatisticMaxValue];
@@ -159,10 +161,15 @@ namespace ImitationOleg
                 R2Statistic[counter] = R2 / time;
                 counter++;
             }
-            exportStatistic();
+
+            manageDeltaList();
+
+            //exportStatistic();
             //int index = Array.FindLastIndex(orbitStatistic, item => item > 0);
             //exportStatisticKappa();
-            //exportStatisticDelta();
+            exportStatisticDelta();
+
+            
             double[] orbitTemp = orbitExpectation();
             double orbitExp = orbitTemp[0];
             double kappaTimeDif = orbitTemp[1];
@@ -206,6 +213,14 @@ namespace ImitationOleg
                 workSheet.Cells[j, 1] = j - 1;
                 workSheet.Cells[j, 2] = deltaList[j - 1];
             }
+
+            for (int j = 1; j <= deltaProbs.Length; j++)
+            {
+                workSheet.Cells[j, 3] = j*probStep;
+                workSheet.Cells[j, 4] = deltaProbs[j - 1];
+            }
+
+
             excelApp.Visible = true;
             excelApp.UserControl = true;
         }
@@ -222,7 +237,6 @@ namespace ImitationOleg
             {
                 workSheet.Cells[j, 1] = j - 1;
                 workSheet.Cells[j, 2] = orbitStatistic[j - 1];
-
             }
             excelApp.Visible = true;
             excelApp.UserControl = true;
@@ -237,32 +251,46 @@ namespace ImitationOleg
                 fullTime += orbitStatistic[i];
                 kappa += orbitStatistic[i] / time * i;
             }
-            return new double[] { kappa, fullTime - time };
+            return new double[] { kappa * orbit.waitParam, fullTime - time };
         }
 
-        public double deltaExpectation()
+        public void manageDeltaList()
         {
-            //int size = 100;
-            //double width = (deltaList.Max() - deltaList.Max()) / size;
-            double deltaExp = 0;
+            int size = (int)Math.Floor(deltaList.Max() + 1);
+            size = (int) (size / probStep);
+            deltaProbs = new double[size];
+
             for (int i = 0; i < deltaList.Count(); i++)
             {
-                deltaExp += deltaList[i];
+                deltaProbs[(int)Math.Floor(deltaList[i]/ probStep)]++;
             }
-            deltaExp /= deltaList.Count();
-            return deltaExp;
+
+            for (int i = 0; i < size; i++)
+            {
+                deltaProbs[i] /= deltaList.Count();
+            }
+        }
+        public double deltaExpectation()
+        {
+            double deltaExp = 0;
+            for (int i = 0; i < deltaProbs.Length; i++)
+            {
+                deltaExp += deltaProbs[i]*i*probStep;
+            }
+            return deltaExp/deltaProbs.Length;
         }
 
         public double deltaVariance()
         {
             double deltaExp2 = 0;
-            for (int i = 0; i < deltaList.Count(); i++)
+            double deltaExp = deltaExpectation();
+            for (int i = 0; i < deltaProbs.Length; i++)
             {
-                deltaExp2 += deltaList[i] * deltaList[i];
+                deltaExp2 += Math.Pow((deltaProbs[i] - deltaExp), 2);
 
             }
-            double deltaExp = deltaExpectation();
-            double deltaVar = deltaExp2 / deltaList.Count() - deltaExp * deltaExp;
+
+            double deltaVar = Math.Pow(deltaExp2, 0.5);
 
             return deltaVar;
         }
@@ -271,12 +299,9 @@ namespace ImitationOleg
         {
             double deltaCov = 0;
             double deltaExp = deltaExpectation();
-            for (int i = 0; i < deltaList.Count(); i++)
-            {
-                deltaCov += (deltaList[i] - deltaExp) * orbit.waitParam;               
-            }
+            double deltaVar = deltaVariance();
             
-            deltaCov = deltaCov / (deltaList.Count() - 1);
+            deltaCov = deltaVar / deltaExp;
 
             return deltaCov;
         }
