@@ -43,7 +43,7 @@ namespace ImitationOleg
 
             time = 0;
             eventCounter = 0;
-            maxEvents = 50000;
+            maxEvents = 100000;
 
             orbitStatisticMaxValue = maxEvents;
             orbitStatistic = new double[orbitStatisticMaxValue];
@@ -162,21 +162,23 @@ namespace ImitationOleg
                 counter++;
             }
 
-            manageDeltaList();
+            //manageDeltaList();
 
-            //exportStatistic();
+            exportStatistic();
             //int index = Array.FindLastIndex(orbitStatistic, item => item > 0);
             //exportStatisticKappa();
-            exportStatisticDelta();
+            //exportStatisticDelta();
 
             
             double[] orbitTemp = orbitExpectation();
             double orbitExp = orbitTemp[0];
             double kappaTimeDif = orbitTemp[1];
-            double deltaCov = deltaCovariance();
             double deltaVar = deltaVariance();
+            double deltaCov = deltaVarianceFinal();
+            double deltaCor = deltaCore();
+           
 
-            double[] ans = new double[] { orbitExp, deltaVar, deltaCov, kappaTimeDif };
+            double[] ans = new double[] { orbitExp, deltaVar, deltaCov, deltaCor, kappaTimeDif };
             return ans;
         }
 
@@ -196,6 +198,7 @@ namespace ImitationOleg
                 workSheet.Cells[j, 4] = R2Statistic[j - 1];
 
             }
+            workSheet.Cells[1, 5] = deltaExpectation();
             excelApp.Visible = true;
             excelApp.UserControl = true;
         }
@@ -270,7 +273,21 @@ namespace ImitationOleg
                 deltaProbs[i] /= deltaList.Count();
             }
         }
+
         public double deltaExpectation()
+        {
+            //int size = 100;
+            //double width = (deltaList.Max() - deltaList.Max()) / size;
+            double deltaExp = 0;
+            for (int i = 0; i < deltaList.Count(); i++)
+            {
+                deltaExp += deltaList[i];
+            }
+             
+            deltaExp /= deltaList.Count();
+            return deltaExp;
+        }
+        public double deltaExpectation2()
         {
             double deltaExp = 0;
             for (int i = 0; i < deltaProbs.Length; i++)
@@ -284,18 +301,45 @@ namespace ImitationOleg
         {
             double deltaExp2 = 0;
             double deltaExp = deltaExpectation();
+            for (int i = 0; i < deltaList.Count(); i++)
+            {
+                double deltaVal = deltaList[i];
+                deltaExp2 += Math.Pow((deltaVal - deltaExp), 2);
+            }
+
+            double deltaVar = Math.Pow(deltaExp2/deltaList.Count(), 0.5);
+
+            return deltaVar;
+        }
+        public double deltaVariance2()
+        {
+            double deltaExp2 = 0;
+            double deltaExp = deltaExpectation2();
             for (int i = 0; i < deltaProbs.Length; i++)
             {
                 deltaExp2 += Math.Pow((deltaProbs[i] - deltaExp), 2);
 
             }
 
-            double deltaVar = Math.Pow(deltaExp2, 0.5);
+            double deltaVar = Math.Pow(deltaExp2/deltaProbs.Length, 0.5);
 
             return deltaVar;
         }
 
-        public double deltaCovariance()
+        public double deltaCore()
+        {
+            double deltaCor = 0;
+            double deltaExp = deltaExpectation();
+            for (int i = 0; i < deltaList.Count(); i++)
+            {
+                deltaCor += (deltaList[i] - deltaExp) * orbit.waitParam;
+            }
+
+            deltaCor = deltaCor / (deltaList.Count() - 1);
+            return deltaCor;
+        }
+
+        public double deltaVarianceFinal()
         {
             double deltaCov = 0;
             double deltaExp = deltaExpectation();

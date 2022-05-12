@@ -47,6 +47,8 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.arrivalParamInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.serviceParamInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.breakParamInput)).BeginInit();
@@ -177,7 +179,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(335, 265);
+            this.label6.Location = new System.Drawing.Point(335, 248);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(46, 17);
             this.label6.TabIndex = 11;
@@ -186,7 +188,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(338, 286);
+            this.label7.Location = new System.Drawing.Point(338, 269);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(46, 17);
             this.label7.TabIndex = 12;
@@ -195,7 +197,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(335, 303);
+            this.label8.Location = new System.Drawing.Point(335, 286);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(46, 17);
             this.label8.TabIndex = 13;
@@ -204,7 +206,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(283, 265);
+            this.label9.Location = new System.Drawing.Point(283, 248);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(47, 17);
             this.label9.TabIndex = 14;
@@ -213,20 +215,21 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(283, 282);
+            this.label10.Location = new System.Drawing.Point(283, 265);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(28, 17);
+            this.label10.Size = new System.Drawing.Size(16, 17);
             this.label10.TabIndex = 15;
-            this.label10.Text = "var";
+            this.label10.Text = "o";
+            this.label10.Click += new System.EventHandler(this.label10_Click);
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(283, 299);
+            this.label11.Location = new System.Drawing.Point(283, 286);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(30, 17);
+            this.label11.Size = new System.Drawing.Size(28, 17);
             this.label11.TabIndex = 16;
-            this.label11.Text = "cov";
+            this.label11.Text = "var";
             // 
             // label12
             // 
@@ -246,11 +249,32 @@
             this.label13.TabIndex = 18;
             this.label13.Text = "kappaTimeDif";
             // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(283, 303);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(28, 17);
+            this.label14.TabIndex = 20;
+            this.label14.Text = "cor";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(335, 303);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(28, 17);
+            this.label15.TabIndex = 19;
+            this.label15.Text = "cor";
+            this.label15.Click += new System.EventHandler(this.label15_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.label15);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
@@ -303,6 +327,8 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
     }
 }
 

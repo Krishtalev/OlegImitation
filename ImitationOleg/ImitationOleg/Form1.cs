@@ -40,8 +40,20 @@ namespace ImitationOleg
             label6.Text = ans[0].ToString();
             label7.Text = ans[1].ToString();
             label8.Text = ans[2].ToString();
-            label12.Text = ans[3].ToString();
+            label15.Text = ans[3].ToString();
+            label12.Text = ans[4].ToString();
+            
             Console.WriteLine("end");
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label15_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
