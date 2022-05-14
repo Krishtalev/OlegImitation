@@ -42,6 +42,8 @@ namespace ImitationOleg
             label8.Text = ans[2].ToString();
             label15.Text = ans[3].ToString();
             label12.Text = ans[4].ToString();
+            label18.Text = ans[5].ToString();
+            label19.Text = ans[6].ToString();
             
             Console.WriteLine("end");
         }

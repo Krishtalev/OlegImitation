@@ -11,11 +11,13 @@ namespace ImitationOleg
         public double arrivalParam;
         IDistribution arrivalFunction;
         private double arrivalTime;
+        private double previousTime;
 
         public ArrivalProcess(double arrivalParam, IDistribution arrivalFunction)
         {
             this.arrivalParam = arrivalParam;
             this.arrivalFunction = arrivalFunction;
+            previousTime = 0;
 
             calculateArrivalTime(0);
         }
@@ -23,7 +25,15 @@ namespace ImitationOleg
         public void reset(double arrivalParam)
         {
             this.arrivalParam = arrivalParam;
+            previousTime = 0;
             calculateArrivalTime(0);
+        }
+
+        public double getDelta()
+        {
+            double delta = arrivalTime - previousTime;
+            previousTime = arrivalTime;
+            return delta;
         }
 
         public void calculateArrivalTime(double time)

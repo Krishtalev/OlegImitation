@@ -32,7 +32,9 @@ namespace ImitationOleg
         private double R2;
         private double[] R2Statistic;
         private List<double> deltaList;
+        private List<double> lambdaList;
         private double[] deltaProbs;
+        int reqs = 0;
         double probStep = 0.25;
 
         public Model(ArrivalProcess arrivalProcess, Service service, Orbit orbit)
@@ -43,7 +45,7 @@ namespace ImitationOleg
 
             time = 0;
             eventCounter = 0;
-            maxEvents = 100000;
+            maxEvents = 80000;
 
             orbitStatisticMaxValue = maxEvents;
             orbitStatistic = new double[orbitStatisticMaxValue];
@@ -72,6 +74,8 @@ namespace ImitationOleg
                 R1 = 0;
                 R2 = 0;
                 deltaList = new List<double>();
+                lambdaList = new List<double>();
+                reqs = 0;
                 eventCounter = 0;
 
                 service.reset(service.serviceParam, service.breakParam, (double)(service.repairParam + step));
@@ -98,6 +102,10 @@ namespace ImitationOleg
 
                     if (minTime == arrivalTime)
                     {
+                        double delta = arrivalProcess.getDelta();
+                        lambdaList.Add(delta);
+                        reqs++;
+
                         //Console.WriteLine("arrival");
                         if (service.isEmpty && service.isWorking)
                         {
@@ -167,7 +175,7 @@ namespace ImitationOleg
             exportStatistic();
             //int index = Array.FindLastIndex(orbitStatistic, item => item > 0);
             //exportStatisticKappa();
-            //exportStatisticDelta();
+            exportStatisticDelta();
 
             
             double[] orbitTemp = orbitExpectation();
@@ -176,9 +184,13 @@ namespace ImitationOleg
             double deltaVar = deltaVariance();
             double deltaCov = deltaVarianceFinal();
             double deltaCor = deltaCore();
-           
+            double lambdaExp = lambdaExpectation();
+            double deltaExp = deltaExpectation();
+            double ll = reqs / time;
+            double dd = deltaList.Count / time;
 
-            double[] ans = new double[] { orbitExp, deltaVar, deltaCov, deltaCor, kappaTimeDif };
+            double[] ans = new double[] { orbitExp, deltaVar, deltaCov, deltaCor, kappaTimeDif, lambdaExp, deltaExp  };
+
             return ans;
         }
 
@@ -216,12 +228,12 @@ namespace ImitationOleg
                 workSheet.Cells[j, 1] = j - 1;
                 workSheet.Cells[j, 2] = deltaList[j - 1];
             }
-
+            /*
             for (int j = 1; j <= deltaProbs.Length; j++)
             {
                 workSheet.Cells[j, 3] = j*probStep;
                 workSheet.Cells[j, 4] = deltaProbs[j - 1];
-            }
+            }*/
 
 
             excelApp.Visible = true;
@@ -245,6 +257,19 @@ namespace ImitationOleg
             excelApp.UserControl = true;
         }
 
+        public double lambdaExpectation()
+        {
+            //int size = 100;
+            //double width = (deltaList.Max() - deltaList.Max()) / size;
+            double deltaExp = 0;
+            for (int i = 0; i < lambdaList.Count(); i++)
+            {
+                deltaExp += lambdaList[i];
+            }
+
+            deltaExp /= lambdaList.Count();
+            return deltaExp;
+        }
         public double[] orbitExpectation()
         {
             double kappa = 0;
