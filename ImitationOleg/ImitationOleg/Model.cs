@@ -17,8 +17,8 @@ namespace ImitationOleg
         private int eventCounter;
         private int maxEvents;
 
-        public int expMax = 1;
-        public double step = 0.1F;
+        public int expMax = 50;
+        public double step = 0.01F;
         public double firstValue;
 
 
@@ -31,6 +31,8 @@ namespace ImitationOleg
         private double[] R1Statistic;
         private double R2;
         private double[] R2Statistic;
+        private double[] KappaStatistic;
+        private double[] CovarianceStatistic;
         private List<double> deltaList;
         private List<double> lambdaList;
         private double[] deltaProbs;
@@ -45,7 +47,7 @@ namespace ImitationOleg
 
             time = 0;
             eventCounter = 0;
-            maxEvents = 80000;
+            maxEvents = 50000;
 
             orbitStatisticMaxValue = maxEvents;
             orbitStatistic = new double[orbitStatisticMaxValue];
@@ -64,8 +66,10 @@ namespace ImitationOleg
             R0Statistic = new double[expMax];
             R1Statistic = new double[expMax];
             R2Statistic = new double[expMax];
-            firstValue = service.repairParam;
-            service.repairParam -= step;
+            KappaStatistic = new double[expMax];
+            CovarianceStatistic = new double[expMax];
+            firstValue = service.breakParam;
+            service.breakParam -= step;
 
             while (counter < expMax)
             {
@@ -75,10 +79,11 @@ namespace ImitationOleg
                 R2 = 0;
                 deltaList = new List<double>();
                 lambdaList = new List<double>();
+                orbitStatistic = new double[orbitStatisticMaxValue];
                 reqs = 0;
                 eventCounter = 0;
 
-                service.reset(service.serviceParam, service.breakParam, (double)(service.repairParam + step));
+                service.reset(service.serviceParam, (double)(service.breakParam + step), service.repairParam);
                 arrivalProcess.reset(arrivalProcess.arrivalParam);
                 orbit.reset(orbit.waitParam);
 
@@ -167,6 +172,9 @@ namespace ImitationOleg
                 R0Statistic[counter] = R0 / time;
                 R1Statistic[counter] = R1 / time;
                 R2Statistic[counter] = R2 / time;
+                double[] orbitTemper = orbitExpectation();
+                KappaStatistic[counter] = orbitTemper[0];
+                CovarianceStatistic[counter] = deltaVarianceFinal();
                 counter++;
             }
 
@@ -175,7 +183,7 @@ namespace ImitationOleg
             exportStatistic();
             //int index = Array.FindLastIndex(orbitStatistic, item => item > 0);
             //exportStatisticKappa();
-            exportStatisticDelta();
+            //exportStatisticDelta();
 
             
             double[] orbitTemp = orbitExpectation();
@@ -208,9 +216,10 @@ namespace ImitationOleg
                 workSheet.Cells[j, 2] = R0Statistic[j - 1];
                 workSheet.Cells[j, 3] = R1Statistic[j - 1];
                 workSheet.Cells[j, 4] = R2Statistic[j - 1];
+                workSheet.Cells[j, 5] = KappaStatistic[j - 1];
+                workSheet.Cells[j, 6] = CovarianceStatistic[j - 1];
 
             }
-            workSheet.Cells[1, 5] = deltaExpectation();
             excelApp.Visible = true;
             excelApp.UserControl = true;
         }
